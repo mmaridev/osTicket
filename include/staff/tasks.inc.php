@@ -31,31 +31,30 @@ $sort_options = array(
 
 $queue_columns = array(
         'number' => array(
-            'width' => '8%',
             'heading' => __('Number'),
             ),
         'ticket' => array(
-            'width' => '16%',
             'heading' => __('Ticket'),
             'sort_col'  => 'ticket__number',
             ),
-        'date' => array(
-            'width' => '20%',
-            'heading' => __('Date Created'),
-            'sort_col' => 'created',
-            ),
         'title' => array(
-            'width' => '38%',
             'heading' => __('Title'),
             'sort_col' => 'cdata__title',
             ),
+        'location' => array(
+              'heading' => 'Locato',
+            ),
+        'language' => array(
+            'heading' => 'Lingua',
+        ),
+        'state' => array(
+            'heading' => 'Stato',
+        ),
         'dept' => array(
-            'width' => '16%',
             'heading' => __('Department'),
             'sort_col'  => 'dept__name',
             ),
         'assignee' => array(
-            'width' => '16%',
             'heading' => __('Agent'),
             ),
         );
@@ -160,7 +159,7 @@ $tasks->annotate(array(
     ),
 ));
 
-$tasks->values('id', 'number', 'created', 'staff_id', 'team_id',
+$tasks->values('id', 'number', 'staff_id', 'team_id',
         'staff__firstname', 'staff__lastname', 'team__name',
         'dept__name', 'cdata__title', 'flags', 'ticket__number', 'ticket__ticket_id');
 // Apply requested quick filter
@@ -346,6 +345,32 @@ if ($thisstaff->hasPerm(Task::PERM_DELETE, false)) {
             $qstr = Http::build_query($args);
             // Show headers
             foreach ($queue_columns as $k => $column) {
+                if ($k == "date") {}
+                elseif ($k == "language") {
+                  echo sprintf( '<th width="%s"><a href="#"
+                          class="%s">%s</a></th>',
+                          $column['width'],
+                          isset($column['sort_dir'])
+                          ? ($column['sort_dir'] ? 'asc': 'desc') : '',
+                          $column['heading']);
+                }
+                elseif ($k == "state") {
+                  echo sprintf( '<th width="%s"><a href="#"
+                          class="%s">%s</a></th>',
+                          $column['width'],
+                          isset($column['sort_dir'])
+                          ? ($column['sort_dir'] ? 'asc': 'desc') : '',
+                          $column['heading']);
+                }
+                elseif ($k == "location") {
+                  echo sprintf( '<th width="%s"><a href="#"
+                          class="%s">%s</a></th>',
+                          $column['width'],
+                          isset($column['sort_dir'])
+                          ? ($column['sort_dir'] ? 'asc': 'desc') : '',
+                          $column['heading']);
+                }
+                else {
                 echo sprintf( '<th width="%s"><a href="?sort=%s&dir=%s&%s"
                         class="%s">%s</a></th>',
                         $column['width'],
@@ -355,7 +380,7 @@ if ($thisstaff->hasPerm(Task::PERM_DELETE, false)) {
                         isset($column['sort_dir'])
                         ? ($column['sort_dir'] ? 'asc': 'desc') : '',
                         $column['heading']);
-            }
+            }}
             ?>
         </tr>
      </thead>
@@ -363,7 +388,8 @@ if ($thisstaff->hasPerm(Task::PERM_DELETE, false)) {
         <?php
         // Setup Subject field for display
         $total=0;
-        $title_field = TaskForm::getInstance()->getField('title');
+        $form = TaskForm::getInstance();
+        $title_field = $form->getField('title');
         $ids=($errors && $_POST['tids'] && is_array($_POST['tids']))?$_POST['tids']:null;
         foreach ($tasks as $T) {
             $T['isopen'] = ($T['flags'] & TaskModel::ISOPEN != 0); //XXX:
@@ -416,8 +442,6 @@ if ($thisstaff->hasPerm(Task::PERM_DELETE, false)) {
                     href="tickets.php?id=<?php echo $T['ticket__ticket_id']; ?>"
                     data-preview="#tickets/<?php echo $T['ticket__ticket_id']; ?>/preview"
                     ><?php echo $T['ticket__number']; ?></a></td>
-                <td align="center" nowrap><?php echo
-                Format::datetime($T[$date_col ?: 'created']); ?></td>
                 <td><a <?php if ($flag) { ?> class="Icon <?php echo $flag; ?>Ticket" title="<?php echo ucfirst($flag); ?> Ticket" <?php } ?>
                     href="tasks.php?id=<?php echo $T['id']; ?>"><?php
                     echo $title; ?></a>
@@ -431,6 +455,28 @@ if ($thisstaff->hasPerm(Task::PERM_DELETE, false)) {
                             echo '<i class="icon-fixed-width icon-paperclip"></i>&nbsp;';
                     ?>
                 </td>
+                <td nowrap><?php
+                $task = Task::lookup($T["id"]);
+                try {
+                  $ct = $task->_answers["location"]->ht["value"];
+                  echo $ct;
+                }
+                catch (exception $e) {}
+                ?></td>
+                <td nowrap><?php
+                try {
+                  $ct = $task->_answers["language"]->ht["value"];
+                  echo explode('"', $ct)[3];
+                }
+                catch (exception $e) {}
+                ?></td>
+                <td nowrap><?php
+                try {
+                  $ct = $task->_answers["state"]->ht["value"];
+                  echo explode('"', $ct)[3];
+                }
+                catch (exception $e) {}
+                ?></td>
                 <td nowrap>&nbsp;<?php echo Format::truncate($dept, 40); ?></td>
                 <td nowrap>&nbsp;<?php echo $assignee; ?></td>
             </tr>
@@ -442,7 +488,7 @@ if ($thisstaff->hasPerm(Task::PERM_DELETE, false)) {
     </tbody>
     <tfoot>
      <tr>
-        <td colspan="7">
+        <td colspan="9">
             <?php if($total && $thisstaff->canManageTickets()){ ?>
             <?php echo __('Select');?>:&nbsp;
             <a id="selectAll" href="#ckb"><?php echo __('All');?></a>&nbsp;&nbsp;
