@@ -243,11 +243,14 @@ class TasksAjaxAPI extends AjaxController {
           $_POST = $cleaner;
           $ticketsapi->editField($task->ticket->getId(), 47, true);
           $_POST = $upstream_POST;
+          $task->ticket = NULL;
         }
-        // set in new ticket
-        $ticket = Ticket::lookupByNumber(intval($_POST["new_ticket_number"]));
-        $ticketsapi->editField($ticket->getId(), 47, true);
-        $task->ticket = $ticket;
+        if (array_key_exists("new_ticket_number", $_POST) && $_POST["new_ticket_number"]) {
+          // set in new ticket
+          $ticket = Ticket::lookupByNumber(intval($_POST["new_ticket_number"]));
+          $ticketsapi->editField($ticket->getId(), 47, true);
+          $task->ticket = $ticket;
+        }
         $task->save();
         Http::response(201, $this->json_encode([]));
       }
