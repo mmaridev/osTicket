@@ -13,13 +13,13 @@
 var thread = {
 
     options: {
-        autoScroll: true,
+        autoScroll: false,
         showimages: false
     },
 
     scrollTo: function (entry) {
 
-       if (!entry) return;
+       if (true) return;
 
        var frame = 0;
        $('html, body').animate({
