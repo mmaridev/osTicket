@@ -631,7 +631,7 @@ class TicketsAjaxAPI extends AjaxController {
         include STAFFINC_DIR . 'templates/refer.tmpl.php';
     }
 
-    function editField($tid, $fid) {
+    function editField($tid, $fid, $noreturn=false) {
         global $cfg, $thisstaff;
 
         if (!($ticket=Ticket::lookup($tid)))
@@ -714,7 +714,8 @@ class TicketsAjaxAPI extends AjaxController {
                 }
 
                 $clean = is_array($clean) ? $clean[0] : $clean;
-                Http::response(201, $this->json_encode($response));
+                if (!$noreturn)
+                  Http::response(201, $this->json_encode($response));
             }
 
             $form->addErrors($errors);

@@ -19,6 +19,7 @@ if(!defined('INCLUDE_DIR')) die('403');
 include_once(INCLUDE_DIR.'class.ticket.php');
 require_once(INCLUDE_DIR.'class.ajax.php');
 require_once(INCLUDE_DIR.'class.task.php');
+require_once(INCLUDE_DIR.'ajax.tickets.php');
 include_once INCLUDE_DIR . 'class.thread_actions.php';
 
 class TasksAjaxAPI extends AjaxController {
@@ -210,6 +211,51 @@ class TasksAjaxAPI extends AjaxController {
         }
 
         include STAFFINC_DIR . 'templates/task-edit.tmpl.php';
+    }
+
+    function editTicket($tid) {
+      global $thisstaff;
+      $errors = array();
+
+      if (!($task=Task::lookup($tid)))
+          Http::response(404, __('No such task'));
+      elseif (!$task->checkStaffPerm($thisstaff, Task::PERM_EDIT))
+          Http::response(403, __('Permission denied'));
+      $ticket = Ticket::objects()[0];
+      $info = array(
+        ':title' => "Modifica ticket assegnatario",
+        ':action' => sprintf('#tasks/%d/ticket',
+        $task->getId())
+      );
+      $field=$ticket->getField(47);
+      if (!$field)
+          Http::response(404, __('No such field'));
+
+      if ($_POST) {
+        $ticketsapi = new TicketsAjaxAPI;
+        if ($task->ticket) {
+          // remove from old ticket
+          $cleaner = array();
+          foreach ($_POST as $key => $value) {
+            $cleaner[$key] = "";
+          }
+          $upstream_POST = $_POST;
+          $_POST = $cleaner;
+          $ticketsapi->editField($task->ticket->getId(), 47, true);
+          $_POST = $upstream_POST;
+        }
+        // set in new ticket
+        $ticket = Ticket::lookupByNumber(intval($_POST["new_ticket_number"]));
+        $ticketsapi->editField($ticket->getId(), 47, true);
+        $task->ticket = $ticket;
+        $task->save();
+        Http::response(201, $this->json_encode([]));
+      }
+
+
+      $form = $field->getEditForm($_POST);
+
+      include STAFFINC_DIR . 'templates/task-edit-ticket.php';
     }
 
     function editField($tid, $fid) {

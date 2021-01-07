@@ -115,6 +115,10 @@ if ($task->isOverdue())
                             );
                     ?>><?php echo sprintf(__('Task #%s'), $task->getNumber()); ?></a>
                 </strong>
+                <!-- associate task and ticket -->
+                <a class="task-action" href="#tasks/<?php echo $task->getId(); ?>/ticket">
+                  <i class="icon-edit"></i>
+                </a>
             <?php
             } else { ?>
                <h2>
@@ -129,6 +133,9 @@ if ($task->isOverdue())
                       data-preview="#tickets/<?php echo $object->getId(); ?>/preview"
                       ><?php echo sprintf(__('Ticket #%s'), $object->getNumber()); ?></a>
                 <?php } ?>
+                <a class="task-action" href="#tasks/<?php echo $task->getId(); ?>/ticket">
+                  <i class="icon-edit"></i>
+                </a>
                 </h2>
             <?php
             }
