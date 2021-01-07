@@ -64,6 +64,12 @@ if ($agent->hasPerm(Task::PERM_DELETE, false)) {
 if ($actions && isset($options['status'])) {
     $more = $options['morelabel'] ?: __('More');
     ?>
+    <a class="action-button tasks-action no-pjax"
+       id="assign_to_ticket" data-placement="bottom"
+       data-toggle="tooltip" title="" data-redirect="tasks.php"
+       href="#tasks/" data-original-title="Assegna a Ticket">
+       <i class="icon-edit"></i>
+    </a>
     <span
         class="action-button"
         data-dropdown="#action-dropdown-moreoptions">
@@ -184,5 +190,13 @@ $(function() {
         }
         return false;
     });
+});
+$(document).ready(function() {
+  $(".ckb").on("change", function() {
+    o = $(this)[0];
+    if (o.checked) {
+      $("#assign_to_ticket")[0].setAttribute("href", "#tasks/" + o.value + "/ticket");
+    }
+  });
 });
 </script>
