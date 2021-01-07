@@ -194,7 +194,7 @@ if ($stats['closed']) {
 }
 
 $nav->addSubMenu(array('desc' => __('Any').' ('.number_format($stats['open'] + $stats['closed']).')',
-                       'title'=>__('Any Task'),
+                       'title'=>__('Tutti i Tasks'),
                        'href'=>'tasks.php?status=any',
                        'iconclass'=>'closedTickets'),
                     ($_REQUEST['status']=='any'));
