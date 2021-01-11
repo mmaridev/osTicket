@@ -324,7 +324,7 @@ if ($thisstaff->hasPerm(Task::PERM_DELETE, false)) {
         </div>
         <div class="pull-right flush-right">
            <?php
-           if ($count && $status != "any")
+           if ($count)
                 echo Task::getAgentActions($thisstaff, array('status' => $status));
             ?>
         </div>
