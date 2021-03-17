@@ -53,12 +53,12 @@ if ($info['topicId'] && ($topic=Topic::lookup($info['topicId']))) {
         <?php } ?>
     </tbody>
     <tbody>
-    <tr <?php if ($info['topicId']) ?> style="display:none;" <?php } ?>><td colspan="2"><hr />
+    <tr <?php if ($info['topicId']) { ?> style="display:none;" <?php } ?>><td colspan="2"><hr />
         <div class="form-header" style="margin-bottom:0.5em">
         <b><?php echo __('Help Topic'); ?></b>
         </div>
     </td></tr>
-    <tr <?php if ($info['topicId']) ?> style="display:none;" <?php } ?>>
+    <tr <?php if ($info['topicId']) { ?> style="display:none;" <?php } ?>>
         <td colspan="2">
             <select id="topicId" name="topicId" onchange="javascript:
                     var data = $(':input[name]', '#dynamic-form').serialize();
