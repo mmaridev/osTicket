@@ -21,7 +21,7 @@ $section = 'home';
 require(CLIENTINC_DIR.'header.inc.php');
 ?>
 <div id="landing_page">
-<?php include CLIENTINC_DIR.'templates/sidebar.tmpl.php'; ?>
+
 <div class="main-content">
 <?php
 if ($cfg && $cfg->isKnowledgebaseEnabled()) { ?>
@@ -41,6 +41,21 @@ if ($cfg && $cfg->isKnowledgebaseEnabled()) { ?>
         echo  '<h1>'.__('Welcome to the Support Center').'</h1>';
     ?>
     </div>
+
+    <table style="width:100%;"><tbody><tr>
+      <td>
+        <a href="open.php?topicId=19" style="display:block; background-color:#1C5BBD;" class="green button">
+          Donare un PC <br><br> Einen PC spenden</a>
+      </td>
+      <td>
+        <a href="open.php?topicId=13" style="display:block; background-color: #91BD09;" class="blue button">
+          Richiedere un PC <br><br> Einen PC anfordern</a>
+      </td>
+      <td>
+        <a href="view.php" style="display:block; background-color: #BD301C;" class="button">
+          Controlla stato richiesta <br><br> Anforderungsstatus &uuml;berpr&uuml;fen</a>
+      </td>
+    </tr></tbody></table>
 </div>
 <div class="clear"></div>
 
