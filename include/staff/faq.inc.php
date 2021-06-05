@@ -185,12 +185,14 @@ if ($faq && count($langs) > 1) { ?>
     </div>
     <div>
     <textarea name="<?php echo $aname; ?>" cols="21" rows="12"
-        data-width="670px"
-        class="richtext draft" <?php
+        data-width="670px" id="summernote"
+        <?php
 list($draft, $attrs) = Draft::getDraftAndDataAttrs('faq', $namespace, $answer);
 echo $attrs; ?>><?php echo $draft ?: $answer;
         ?></textarea>
-
+<script type="text/javascript">
+    $("#summernote").summernote();
+</script>
     </div>
     </div>
 <?php } ?>
